@@ -47,6 +47,50 @@ return {
 				enable = true,
 				update_root = false,
 			},
+			on_attach = function(bufnr)
+				local api = require("nvim-tree.api")
+
+				-- Default mappings
+				api.config.mappings.default_on_attach(bufnr)
+
+				-- Custom mappings to open files in new tab by default
+				local function opts(desc)
+					return { desc = "nvim-tree: " .. desc, buffer = bufnr, noremap = true, silent = true, nowait = true }
+				end
+
+				-- Custom function to open file in a new tab (VSCode style)
+				local function open_file_in_new_tab()
+					local node = api.tree.get_node_under_cursor()
+					if node.type == "directory" then
+						-- For directories, use default toggle behavior
+						api.node.open.edit()
+					elseif node.type == "file" then
+						-- Check if there are any windows to the right
+						local current_win = vim.api.nvim_get_current_win()
+						vim.cmd("wincmd l")
+						local right_win = vim.api.nvim_get_current_win()
+
+						-- If we didn't move to a different window, create a vertical split first
+						if current_win == right_win then
+							vim.cmd("vsplit")
+						end
+
+						-- Open file in a new tab in the right area
+						vim.cmd("tabnew " .. vim.fn.fnameescape(node.absolute_path))
+
+						-- Reopen nvim-tree in the new tab on the left
+						vim.cmd("NvimTreeOpen")
+						vim.cmd("wincmd H") -- Move tree to far left
+						vim.cmd("vertical resize 30")
+						vim.cmd("wincmd l") -- Move cursor back to file
+					end
+				end
+
+				-- Override default open behavior
+				vim.keymap.set("n", "<CR>", open_file_in_new_tab, opts("Open: In New Tab"))
+				vim.keymap.set("n", "o", open_file_in_new_tab, opts("Open: In New Tab"))
+				vim.keymap.set("n", "<2-LeftMouse>", open_file_in_new_tab, opts("Open: In New Tab"))
+			end,
 		})
 
 		-- Auto-reveal current file in tree when switching buffers

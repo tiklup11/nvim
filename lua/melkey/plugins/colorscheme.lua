@@ -1,7 +1,9 @@
 return {
+  -- Tokyo Night (current)
   {
     "folke/tokyonight.nvim",
-    priority = 1000, -- make sure to load this before all the other start plugins
+    lazy = false,
+    priority = 1000,
     config = function()
       local bg = "#011628"
       local bg_dark = "#011423"
@@ -36,5 +38,49 @@ return {
       -- load the colorscheme here
       vim.cmd([[colorscheme tokyonight]])
     end,
+  },
+
+  -- Catppuccin (popular, multiple variants)
+  {
+    "catppuccin/nvim",
+    name = "catppuccin",
+    lazy = true,
+  },
+
+  -- Gruvbox (classic)
+  {
+    "ellisonleao/gruvbox.nvim",
+    lazy = true,
+  },
+
+  -- Nord (cool blue theme)
+  {
+    "shaunsingh/nord.nvim",
+    lazy = true,
+  },
+
+  -- Kanagawa (soft, warm colors)
+  {
+    "rebelot/kanagawa.nvim",
+    lazy = true,
+  },
+
+  -- Rose Pine (elegant)
+  {
+    "rose-pine/neovim",
+    name = "rose-pine",
+    lazy = true,
+  },
+
+  -- Nightfox (multiple variants)
+  {
+    "EdenEast/nightfox.nvim",
+    lazy = true,
+  },
+
+  -- GitHub theme (light/dark)
+  {
+    "projekt0n/github-nvim-theme",
+    lazy = true,
   },
 }
